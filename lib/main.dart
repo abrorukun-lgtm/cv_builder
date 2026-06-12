@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
+import 'package:pdf/pdf.dart';
+import 'package:pdf/widgets.dart' as pw;
+import 'package:printing/printing.dart';
 
 void main() {
   runApp(const CVBuilderApp());
@@ -128,92 +131,4 @@ class _CVFormPageState extends State<CVFormPage> {
 class CVPreviewPage extends StatelessWidget {
   final String name, title, phone, email, linkedin, github, summary, experience, education, skills, languages, projects, achievements;
   final File? photo;
-  const CVPreviewPage({super.key, required this.name, required this.title, required this.phone, required this.email, required this.linkedin, required this.github, required this.summary, required this.experience, required this.education, required this.skills, required this.languages, required this.projects, required this.achievements, this.photo});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        backgroundColor: const Color(0xFF1a2744),
-        title: const Text('CV Preview', style: TextStyle(color: Color(0xFFc9a84c))),
-      ),
-      body: SingleChildScrollView(
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              width: 140,
-              color: const Color(0xFF1a2744),
-              padding: const EdgeInsets.all(12),
-              child: Column(
-                children: [
-                  if (photo != null) CircleAvatar(radius: 45, backgroundImage: FileImage(photo!)),
-                  const SizedBox(height: 12),
-                  _sideSection('Contact'),
-                  _sideItem(Icons.phone, phone),
-                  _sideItem(Icons.email, email),
-                  if (linkedin.isNotEmpty) _sideItem(Icons.link, 'LinkedIn'),
-                  if (github.isNotEmpty) _sideItem(Icons.code, 'GitHub'),
-                  const SizedBox(height: 12),
-                  if (skills.isNotEmpty) ...[
-                    _sideSection('Skills'),
-                    ...skills.split(',').map((s) => _chip(s.trim())),
-                  ],
-                  const SizedBox(height: 12),
-                  if (languages.isNotEmpty) ...[
-                    _sideSection('Languages'),
-                    ...languages.split(',').map((l) => _chip(l.trim())),
-                  ],
-                ],
-              ),
-            ),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(name.toUpperCase(), style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Color(0xFF1a2744))),
-                    Text(title, style: const TextStyle(fontSize: 13, color: Color(0xFFc9a84c), fontWeight: FontWeight.bold)),
-                    const Divider(color: Color(0xFFc9a84c), thickness: 2),
-                    if (summary.isNotEmpty) ...[_mainSection('Summary'), Text(summary, style: const TextStyle(fontSize: 12))],
-                    if (experience.isNotEmpty) ...[_mainSection('Experience'), Text(experience, style: const TextStyle(fontSize: 12))],
-                    if (education.isNotEmpty) ...[_mainSection('Education'), Text(education, style: const TextStyle(fontSize: 12))],
-                    if (projects.isNotEmpty) ...[_mainSection('Projects'), Text(projects, style: const TextStyle(fontSize: 12))],
-                    if (achievements.isNotEmpty) ...[_mainSection('Achievements'), Text(achievements, style: const TextStyle(fontSize: 12))],
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _sideSection(String t) => Padding(
-    padding: const EdgeInsets.only(bottom: 4, top: 4),
-    child: Text(t, style: const TextStyle(color: Color(0xFFc9a84c), fontWeight: FontWeight.bold, fontSize: 11)),
-  );
-
-  Widget _sideItem(IconData icon, String text) => Padding(
-    padding: const EdgeInsets.symmetric(vertical: 2),
-    child: Row(children: [Icon(icon, color: const Color(0xFFc9a84c), size: 12), const SizedBox(width: 4), Expanded(child: Text(text, style: const TextStyle(color: Colors.white, fontSize: 10), overflow: TextOverflow.ellipsis))]),
-  );
-
-  Widget _chip(String text) => Container(
-    margin: const EdgeInsets.only(bottom: 4),
-    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
-    decoration: BoxDecoration(color: const Color(0xFFc9a84c).withOpacity(0.2), borderRadius: BorderRadius.circular(4)),
-    child: Text(text, style: const TextStyle(color: Colors.white, fontSize: 10)),
-  );
-
-  Widget _mainSection(String t) => Padding(
-    padding: const EdgeInsets.only(top: 12, bottom: 4),
-    child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      Text(t.toUpperCase(), style: const TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF1a2744), fontSize: 13)),
-      const Divider(color: Color(0xFFc9a84c), height: 8),
-    ]),
-  );
-}
+  const CVPreviewPage({super.key, required this.name, required this.title, required this.phone, required this.email,
