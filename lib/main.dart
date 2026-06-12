@@ -127,8 +127,68 @@ class _CVFormPageState extends State<CVFormPage> {
     ),
   );
 }
-
 class CVPreviewPage extends StatelessWidget {
   final String name, title, phone, email, linkedin, github, summary, experience, education, skills, languages, projects, achievements;
   final File? photo;
-  const CVPreviewPage({super.key, required this.name, required this.title, required this.phone, required this.email,
+  const CVPreviewPage({super.key, required this.name, required this.title, required this.phone, required this.email, required this.linkedin, required this.github, required this.summary, required this.experience, required this.education, required this.skills, required this.languages, required this.projects, required this.achievements, this.photo});
+
+  Future<void> _downloadPDF(BuildContext context) async {
+    final pdf = pw.Document();
+    pw.MemoryImage? photoImage;
+    if (photo != null) {
+      final bytes = await photo!.readAsBytes();
+      photoImage = pw.MemoryImage(bytes);
+    }
+    pdf.addPage(pw.Page(
+      pageFormat: PdfPageFormat.a4,
+      build: (pw.Context ctx) {
+        return pw.Row(
+          crossAxisAlignment: pw.CrossAxisAlignment.start,
+          children: [
+            pw.Container(
+              width: 160,
+              color: const PdfColor.fromInt(0xFF1a2744),
+              padding: const pw.EdgeInsets.all(12),
+              child: pw.Column(
+                crossAxisAlignment: pw.CrossAxisAlignment.start,
+                children: [
+                  if (photoImage != null)
+                    pw.Center(child: pw.ClipOval(child: pw.Image(photoImage, width: 80, height: 80))),
+                  pw.SizedBox(height: 12),
+                  pw.Text('Contact', style: pw.TextStyle(color: const PdfColor.fromInt(0xFFc9a84c), fontWeight: pw.FontWeight.bold, fontSize: 11)),
+                  pw.SizedBox(height: 4),
+                  pw.Text(phone, style: const pw.TextStyle(color: PdfColors.white, fontSize: 9)),
+                  pw.Text(email, style: const pw.TextStyle(color: PdfColors.white, fontSize: 9)),
+                  if (linkedin.isNotEmpty) pw.Text('LinkedIn', style: const pw.TextStyle(color: PdfColors.white, fontSize: 9)),
+                  if (github.isNotEmpty) pw.Text('GitHub', style: const pw.TextStyle(color: PdfColors.white, fontSize: 9)),
+                  pw.SizedBox(height: 12),
+                  if (skills.isNotEmpty) ...[
+                    pw.Text('Skills', style: pw.TextStyle(color: const PdfColor.fromInt(0xFFc9a84c), fontWeight: pw.FontWeight.bold, fontSize: 11)),
+                    pw.SizedBox(height: 4),
+                    ...skills.split(',').map((s) => pw.Text('• ${s.trim()}', style: const pw.TextStyle(color: PdfColors.white, fontSize: 9))),
+                  ],
+                  pw.SizedBox(height: 12),
+                  if (languages.isNotEmpty) ...[
+                    pw.Text('Languages', style: pw.TextStyle(color: const PdfColor.fromInt(0xFFc9a84c), fontWeight: pw.FontWeight.bold, fontSize: 11)),
+                    pw.SizedBox(height: 4),
+                    ...languages.split(',').map((l) => pw.Text('• ${l.trim()}', style: const pw.TextStyle(color: PdfColors.white, fontSize: 9))),
+                  ],
+                ],
+              ),
+            ),
+            pw.Expanded(
+              child: pw.Padding(
+                padding: const pw.EdgeInsets.all(16),
+                child: pw.Column(
+                  crossAxisAlignment: pw.CrossAxisAlignment.start,
+                  children: [
+                    pw.Text(name.toUpperCase(), style: pw.TextStyle(fontSize: 22, fontWeight: pw.FontWeight.bold, color: const PdfColor.fromInt(0xFF1a2744))),
+                    pw.Text(title, style: pw.TextStyle(fontSize: 13, color: const PdfColor.fromInt(0xFFc9a84c), fontWeight: pw.FontWeight.bold)),
+                    pw.Divider(color: const PdfColor.fromInt(0xFFc9a84c), thickness: 2),
+                    if (summary.isNotEmpty) ...[_pdfSection('Summary'), pw.Text(summary, style: const pw.TextStyle(fontSize: 10))],
+                    if (experience.isNotEmpty) ...[_pdfSection('Experience'), pw.Text(experience, style: const pw.TextStyle(fontSize: 10))],
+                    if (education.isNotEmpty) ...[_pdfSection('Education'), pw.Text(education, style: const pw.TextStyle(fontSize: 10))],
+                    if (projects.isNotEmpty) ...[_pdfSection('Projects'), pw.Text(projects, style: const pw.TextStyle(fontSize: 10))],
+                    if (achievements.isNotEmpty) ...[_pdfSection('Achievements'), pw.Text(achievements, style: const pw.TextStyle(fontSize: 10))],
+                  ],
+                ),
