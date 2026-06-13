@@ -92,7 +92,43 @@ class _CVFormPageState extends State<CVFormPage> {
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                class CVPreviewPage extends StatelessWidget {
+                style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFFc9a84c), padding: const EdgeInsets.symmetric(vertical: 16)),
+                onPressed: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (_) => CVPreviewPage(
+                    name: nameCtrl.text, title: titleCtrl.text, phone: phoneCtrl.text,
+                    email: emailCtrl.text, linkedin: linkedinCtrl.text, github: githubCtrl.text,
+                    summary: summaryCtrl.text, experience: experienceCtrl.text,
+                    education: educationCtrl.text, skills: skillsCtrl.text,
+                    languages: languagesCtrl.text, projects: projectsCtrl.text,
+                    achievements: achievementsCtrl.text, photo: _photo,
+                  )));
+                },
+                child: const Text('Preview My CV', style: TextStyle(color: Color(0xFF1a2744), fontSize: 18, fontWeight: FontWeight.bold)),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _label(String text) => Padding(
+    padding: const EdgeInsets.only(top: 16, bottom: 6),
+    child: Text(text, style: const TextStyle(color: Color(0xFFc9a84c), fontWeight: FontWeight.bold, fontSize: 13)),
+  );
+
+  Widget _field(TextEditingController ctrl, String hint, {int lines = 1}) => TextField(
+    controller: ctrl, maxLines: lines,
+    style: const TextStyle(color: Colors.white),
+    decoration: InputDecoration(
+      hintText: hint, hintStyle: const TextStyle(color: Colors.grey),
+      filled: true, fillColor: const Color(0xFF1a2744),
+      border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide.none),
+    ),
+  );
+}
+
+class CVPreviewPage extends StatelessWidget {
   final String name, title, phone, email, linkedin, github, summary, experience, education, skills, languages, projects, achievements;
   final File? photo;
   const CVPreviewPage({super.key, required this.name, required this.title, required this.phone, required this.email, required this.linkedin, required this.github, required this.summary, required this.experience, required this.education, required this.skills, required this.languages, required this.projects, required this.achievements, this.photo});
@@ -173,6 +209,7 @@ class _CVFormPageState extends State<CVFormPage> {
       pw.Divider(color: const PdfColor.fromInt(0xFFc9a84c), height: 6),
     ]),
   );
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
