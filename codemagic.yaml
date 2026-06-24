@@ -13,7 +13,7 @@ workflows:
       - name: Build AAB
         script: |
           echo $CM_KEYSTORE | base64 --decode > /tmp/smartcv.jks
-          flutter build appbundle --release --no-sign --android-skip-build-dependency-validation
+          flutter build appbundle --release --android-skip-build-dependency-validation
       - name: Sign AAB
         script: |
           jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256 \
