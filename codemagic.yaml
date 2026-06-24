@@ -8,7 +8,7 @@ workflows:
     scripts:
       - name: Get Flutter packages
         script: flutter pub get
-      - name: Build APK
-        script: flutter build apk --debug --android-skip-build-dependency-validation
+      - name: Build AAB
+        script: flutter build appbundle --release --android-skip-build-dependency-validation
     artifacts:
-      - build/**/outputs/**/*.apk
+      - build/**/outputs/**/*.aab
