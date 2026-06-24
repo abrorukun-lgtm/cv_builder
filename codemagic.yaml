@@ -5,12 +5,22 @@ workflows:
     max_build_duration: 60
     environment:
       flutter: stable
-      android_signing:
-        - SmartCV Keystore
+      groups:
+        - android_signing
     scripts:
       - name: Get Flutter packages
         script: flutter pub get
       - name: Build AAB
-        script: flutter build appbundle --release --android-skip-build-dependency-validation
+        script: |
+          echo $CM_KEYSTORE | base64 --decode > /tmp/smartcv.jks
+          flutter build appbundle --release --android-skip-build-dependency-validation
+      - name: Sign AAB
+        script: |
+          jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256 \
+            -keystore /tmp/smartcv.jks \
+            -storepass $CM_KEYSTORE_PASSWORD \
+            -keypass $CM_KEY_PASSWORD \
+            build/app/outputs/bundle/release/app-release.aab \
+            $CM_KEY_ALIAS
     artifacts:
       - build/**/outputs/**/*.aab
