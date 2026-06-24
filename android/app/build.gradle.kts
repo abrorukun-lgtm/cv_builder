@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.cv_builder"
+    namespace = "com.smartcvstudio.cv_builder"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
@@ -14,7 +14,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.example.cv_builder"
+        applicationId = "com.smartcvstudio.cv_builder"
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
