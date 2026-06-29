@@ -22,5 +22,17 @@ workflows:
             -keypass $CM_KEY_PASSWORD \
             build/app/outputs/bundle/release/app-release.aab \
             $CM_KEY_ALIAS
+      - name: Build APK
+        script: |
+          flutter build apk --release --android-skip-build-dependency-validation
+      - name: Sign APK
+        script: |
+          jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256 \
+            -keystore /tmp/smartcv.jks \
+            -storepass $CM_KEYSTORE_PASSWORD \
+            -keypass $CM_KEY_PASSWORD \
+            build/app/outputs/flutter-apk/app-release.apk \
+            $CM_KEY_ALIAS
     artifacts:
       - build/**/outputs/**/*.aab
+      - build/**/outputs/**/*.apk
