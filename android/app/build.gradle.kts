@@ -24,6 +24,8 @@ android {
     buildTypes {
         release {
             signingConfig = null
+            isMinifyEnabled = false
+            isShrinkResources = false
         }
     }
 }
