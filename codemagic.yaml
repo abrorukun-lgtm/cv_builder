@@ -10,31 +10,16 @@ workflows:
     scripts:
       - name: Get Flutter packages
         script: flutter pub get
-      - name: Build AAB
+      - name: Set up keystore
         script: |
           echo $CM_KEYSTORE | base64 --decode > /tmp/smartcv.jks
-          flutter build appbundle --release --android-skip-build-dependency-validation
-      - name: Sign AAB
+          echo "CM_KEYSTORE_PATH=/tmp/smartcv.jks" >> $CM_ENV
+      - name: Build AAB
         script: |
-          jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256 \
-            -keystore /tmp/smartcv.jks \
-            -storepass $CM_KEYSTORE_PASSWORD \
-            -keypass $CM_KEY_PASSWORD \
-            build/app/outputs/bundle/release/app-release.aab \
-            $CM_KEY_ALIAS
+          flutter build appbundle --release --android-skip-build-dependency-validation
       - name: Build APK
         script: |
           flutter build apk --release --android-skip-build-dependency-validation
-      - name: Sign APK with apksigner
-        script: |
-          BUILD_TOOLS=$(ls -d $ANDROID_SDK_ROOT/build-tools/*/ | sort -V | tail -n 1)
-          ${BUILD_TOOLS}apksigner sign \
-            --ks /tmp/smartcv.jks \
-            --ks-pass pass:$CM_KEYSTORE_PASSWORD \
-            --key-pass pass:$CM_KEY_PASSWORD \
-            --ks-key-alias $CM_KEY_ALIAS \
-            --out build/app/outputs/flutter-apk/app-release.apk \
-            build/app/outputs/flutter-apk/app-release-unsigned.apk
     artifacts:
       - build/**/outputs/**/*.aab
       - build/**/outputs/**/*.apk
