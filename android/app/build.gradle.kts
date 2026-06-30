@@ -1,5 +1,7 @@
 plugins {
     id("com.android.application")
+    // 1. JETLINE ADDED: Yeh plugin missing tha jis se kotlin compile nahi ho rahi thi
+    id("kotlin-android") 
     id("dev.flutter.flutter-gradle-plugin")
 }
 
@@ -19,6 +21,9 @@ android {
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
+        
+        // 2. LINE ADDED: Multi-dex ko enable kar diya hai
+        multiDexEnabled = true
     }
 
     signingConfigs {
