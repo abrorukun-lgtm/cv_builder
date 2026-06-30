@@ -25,14 +25,16 @@ workflows:
       - name: Build APK
         script: |
           flutter build apk --release --android-skip-build-dependency-validation
-      - name: Sign APK
+      - name: Sign APK with apksigner
         script: |
-          jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256 \
-            -keystore /tmp/smartcv.jks \
-            -storepass $CM_KEYSTORE_PASSWORD \
-            -keypass $CM_KEY_PASSWORD \
-            build/app/outputs/flutter-apk/app-release.apk \
-            $CM_KEY_ALIAS
+          BUILD_TOOLS=$(ls -d $ANDROID_SDK_ROOT/build-tools/*/ | sort -V | tail -n 1)
+          ${BUILD_TOOLS}apksigner sign \
+            --ks /tmp/smartcv.jks \
+            --ks-pass pass:$CM_KEYSTORE_PASSWORD \
+            --key-pass pass:$CM_KEY_PASSWORD \
+            --ks-key-alias $CM_KEY_ALIAS \
+            --out build/app/outputs/flutter-apk/app-release.apk \
+            build/app/outputs/flutter-apk/app-release-unsigned.apk
     artifacts:
       - build/**/outputs/**/*.aab
       - build/**/outputs/**/*.apk
