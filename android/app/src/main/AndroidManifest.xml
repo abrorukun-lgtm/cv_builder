@@ -3,8 +3,10 @@
         android:label="cv_builder"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
+        
+        <!-- Yahan humne .MainActivity ko badal kar poora package name likh diya hai -->
         <activity
-            android:name=".MainActivity"
+            android:name="com.smartcvstudio.cv_builder.MainActivity"
             android:exported="true"
             android:launchMode="singleTop"
             android:taskAffinity=""
